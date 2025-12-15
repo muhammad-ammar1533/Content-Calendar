@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Creator Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fas fa-video"></i>
+            <span>Content Hub</span>
+        </div>
+        <nav class="nav-menu">
+            <a href="#" class="nav-item active" data-view="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-view="ideas">
+                <i class="fas fa-lightbulb"></i>
+                <span>Ideas</span>
+            </a>
+            <a href="#" class="nav-item" data-view="calendar">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Calendar</span>
+            </a>
+        </nav>
+        
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <div class="theme-toggle-text">
+                <i class="fas fa-moon"></i>
+                <span id="theme-text">Dark Mode</span>
+            </div>
+            <div class="toggle-switch"></div>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view active">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <button class="btn-primary" onclick="createNewIdea()">
+                    <i class="fas fa-plus"></i> New Idea
+                </button>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e3f2fd;">
+                        <i class="fas fa-lightbulb" style="color: #1976d2;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-ideas">0</h3>
+                        <p>Total Ideas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fff3e0;">
+                        <i class="fas fa-clock" style="color: #f57c00;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="in-progress">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #e8f5e9;">
+                        <i class="fas fa-check-circle" style="color: #388e3c;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="completed">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: #fce4ec;">
+                        <i class="fas fa-calendar-check" style="color: #c2185b;"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="scheduled">0</h3>
+                        <p>Scheduled</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="recent-section">
+                <h2>Recent Ideas</h2>
+                <div id="recent-ideas" class="ideas-list"></div>
+            </div>
+        </div>
+
+        <!-- Ideas View -->
+        <div id="ideas-view" class="view">
+            <div class="header">
+                <h1>All Ideas</h1>
+                <button class="btn-primary" onclick="createNewIdea()">
+                    <i class="fas fa-plus"></i> New Idea
+                </button>
+            </div>
+            <div class="filter-bar">
+                <input type="text" id="search-ideas" placeholder="Search ideas..." class="search-input">
+                <select id="filter-status" class="filter-select">
+                    <option value="all">All Status</option>
+                    <option value="idea">Idea</option>
+                    <option value="planning">Planning</option>
+                    <option value="recording">Recording</option>
+                    <option value="editing">Editing</option>
+                    <option value="completed">Completed</option>
+                </select>
+            </div>
+            <div id="all-ideas" class="ideas-grid"></div>
+        </div>
+
+        <!-- Calendar View -->
+        <div id="calendar-view" class="view">
+            <div class="header">
+                <h1>Content Calendar</h1>
+                <div class="calendar-controls">
+                    <button class="btn-secondary" onclick="previousMonth()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <h2 id="calendar-month"></h2>
+                    <button class="btn-secondary" onclick="nextMonth()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="calendar-legend">
+                <div class="legend-item">
+                    <span class="legend-color recording"></span>
+                    <span>Recording</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-color upload"></span>
+                    <span>Upload</span>
+                </div>
+            </div>
+            <div id="calendar-grid" class="calendar-container"></div>
+        </div>
+
+        <!-- Idea Detail View -->
+        <div id="idea-detail-view" class="view">
+            <div class="header">
+                <button class="btn-back" onclick="closeIdeaDetail()">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                <h1 id="detail-title">Idea Details</h1>
+                <button class="btn-danger" onclick="deleteCurrentIdea()">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </div>
+            
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="overview">Overview</button>
+                <button class="tab-btn" data-tab="thumbnail">Thumbnail</button>
+                <button class="tab-btn" data-tab="checklist">Checklist</button>
+                <button class="tab-btn" data-tab="scripts">Scripts</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview-tab" class="tab-content active">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label>Title</label>
+                        <input type="text" id="idea-title" class="form-input" placeholder="Enter video title">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Description</label>
+                        <textarea id="idea-description" class="form-textarea" rows="4" placeholder="Enter video description"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Status</label>
+                        <select id="idea-status" class="form-select">
+                            <option value="idea">Idea</option>
+                            <option value="planning">Planning</option>
+                            <option value="recording">Recording</option>
+                            <option value="editing">Editing</option>
+                            <option value="completed">Completed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Priority</label>
+                        <select id="idea-priority" class="form-select">
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Recording Date</label>
+                        <input type="date" id="idea-recording-date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Upload Date</label>
+                        <input type="date" id="idea-upload-date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label>Platforms</label>
+                        <div class="platform-chips">
+                            <label class="chip-checkbox">
+                                <input type="checkbox" value="youtube">
+                                <span><i class="fab fa-youtube"></i> YouTube</span>
+                            </label>
+                            <label class="chip-checkbox">
+                                <input type="checkbox" value="instagram">
+                                <span><i class="fab fa-instagram"></i> Instagram</span>
+                            </label>
+                            <label class="chip-checkbox">
+                                <input type="checkbox" value="tiktok">
+                                <span><i class="fab fa-tiktok"></i> TikTok</span>
+                            </label>
+                            <label class="chip-checkbox">
+                                <input type="checkbox" value="twitter">
+                                <span><i class="fab fa-twitter"></i> Twitter</span>
+                            </label>
+                            <label class="chip-checkbox">
+                                <input type="checkbox" value="facebook">
+                                <span><i class="fab fa-facebook"></i> Facebook</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn-primary" onclick="saveOverview()">Save Changes</button>
+            </div>
+
+            <!-- Thumbnail Tab -->
+            <div id="thumbnail-tab" class="tab-content">
+                <div class="thumbnail-section">
+                    <div class="upload-area" onclick="document.getElementById('thumbnail-upload').click()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to upload thumbnails</p>
+                        <input type="file" id="thumbnail-upload" accept="image/*" multiple style="display: none;">
+                    </div>
+                    <div id="thumbnail-gallery" class="thumbnail-gallery"></div>
+                </div>
+            </div>
+
+            <!-- Checklist Tab -->
+            <div id="checklist-tab" class="tab-content">
+                <div class="checklist-section">
+                    <div class="checklist-header">
+                        <h3>Video Production Checklist</h3>
+                        <button class="btn-primary" onclick="addChecklistItem()">
+                            <i class="fas fa-plus"></i> Add Item
+                        </button>
+                    </div>
+                    <div id="checklist-items" class="checklist-items"></div>
+                </div>
+            </div>
+
+            <!-- Scripts Tab -->
+            <div id="scripts-tab" class="tab-content">
+                <div class="script-editor">
+                    <div class="editor-toolbar">
+                        <button class="toolbar-btn" onclick="formatText('bold')" title="Bold">
+                            <i class="fas fa-bold"></i>
+                        </button>
+                        <button class="toolbar-btn" onclick="formatText('italic')" title="Italic">
+                            <i class="fas fa-italic"></i>
+                        </button>
+                        <button class="toolbar-btn" onclick="formatText('underline')" title="Underline">
+                            <i class="fas fa-underline"></i>
+                        </button>
+                        <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" onclick="formatText('insertUnorderedList')" title="Bullet List">
+                            <i class="fas fa-list-ul"></i>
+                        </button>
+                        <button class="toolbar-btn" onclick="formatText('insertOrderedList')" title="Numbered List">
+                            <i class="fas fa-list-ol"></i>
+                        </button>
+                        <div class="toolbar-divider"></div>
+                        <select class="toolbar-select" onchange="formatHeading(this.value)">
+                            <option value="">Paragraph</option>
+                            <option value="h1">Heading 1</option>
+                            <option value="h2">Heading 2</option>
+                            <option value="h3">Heading 3</option>
+                        </select>
+                        <div class="toolbar-divider"></div>
+                        <button class="toolbar-btn" onclick="formatText('justifyLeft')" title="Align Left">
+                            <i class="fas fa-align-left"></i>
+                        </button>
+                        <button class="toolbar-btn" onclick="formatText('justifyCenter')" title="Align Center">
+                            <i class="fas fa-align-center"></i>
+                        </button>
+                        <button class="toolbar-btn" onclick="formatText('justifyRight')" title="Align Right">
+                            <i class="fas fa-align-right"></i>
+                        </button>
+                    </div>
+                    <div id="script-content" class="editor-content" contenteditable="true" placeholder="Start writing your script..."></div>
+                    <button class="btn-primary" onclick="saveScript()">Save Script</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
